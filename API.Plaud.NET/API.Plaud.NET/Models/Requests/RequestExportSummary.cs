@@ -20,10 +20,10 @@ namespace API.Plaud.NET.Models.Requests
         public string CreateTime { get; set; }
 
         [JsonProperty("with_speaker")]
-        public int WithSpeaker { get; set; }
+        public int? WithSpeaker { get; set; }
 
         [JsonProperty("with_timestamp")]
-        public int WithTimestamp { get; set; }
+        public int? WithTimestamp { get; set; }
 
         [JsonProperty("summary_content")]
         public string SummaryContent { get; set; }

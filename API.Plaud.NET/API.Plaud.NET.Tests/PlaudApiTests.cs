@@ -174,5 +174,20 @@ namespace API.Plaud.NET.Tests
             Assert.That(summaryFile, Is.Not.Null);
             Assert.That(summaryFile, Is.Not.Empty);
         }
+        
+        /// <summary>
+        /// This test can be used to grab a specific transcript.  You will need the id.
+        /// </summary>
+        [Test]
+        public void DownloadSpecificTranscriptFileTest()
+        {            
+            Assert.That(_AuthResponse, Is.Not.Null);
+            Assert.That(_AuthResponse.AccessToken, Is.Not.Null);
+            Assert.That(_plaudApiService.AccessToken, Is.Not.Null);
+            
+            string summaryFile = _plaudApiService.DownloadTranscriptFileAsync("", FileTypes.PDF).Result;
+            Assert.That(summaryFile, Is.Not.Null);
+            Assert.That(summaryFile, Is.Not.Empty);
+        }
     }
 }
