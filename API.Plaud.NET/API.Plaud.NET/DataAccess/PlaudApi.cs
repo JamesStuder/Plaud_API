@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using API.Plaud.NET.Constants;
 using API.Plaud.NET.Models.Responses;
@@ -118,6 +119,64 @@ namespace API.Plaud.NET.DataAccess
             catch (Exception ex)
             {
                 throw new Exception($"PostDataAsync: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Sends a POST request to the specified endpoint with the provided data and access token
+        /// but does not process any response body. Returns a boolean indicating success or failure.
+        /// </summary>
+        /// <param name="endpoint">The API endpoint where the POST request will be sent.</param>
+        /// <param name="dataToPost">The data object to be serialized and sent in the request body.</param>
+        /// <param name="accessToken">The access token used to authorize the request.</param>
+        /// <returns>A boolean indicating whether the POST request was successful.</returns>
+        /// <exception cref="Exception">Throws an exception if the request fails or an error occurs.</exception>
+        internal async Task<bool> PostDataAsyncNoResponseBody(string endpoint, object dataToPost, string accessToken)
+        {
+            try
+            {
+                _httpClient.DefaultRequestHeaders.Clear();
+                _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
+                string jsonData = JsonConvert.SerializeObject(dataToPost);
+                StringContent content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+                HttpResponseMessage response = await _httpClient.PostAsync(endpoint, content);
+                return response.IsSuccessStatusCode;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"PostDataAsyncNoResponseBody: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Sends an HTTP DELETE request to the specified endpoint with a JSON-formatted request body
+        /// and does not expect a response body from the server.
+        /// </summary>
+        /// <param name="endpoint">The URI of the API endpoint where the DELETE request will be sent.</param>
+        /// <param name="dataUsedForDelete">The data to be serialized and sent in the request body.</param>
+        /// <param name="accessToken">The Bearer token for authorizing the request.</param>
+        /// <returns>Returns a boolean indicating whether the request was successful.</returns>
+        /// <exception cref="Exception">Thrown when the HTTP request fails or an error occurs during execution.</exception>
+        internal async Task<bool> DeleteRequestWithBodyAsyncNoResponseBody(string endpoint, object dataUsedForDelete, string accessToken)
+        {
+            try
+            {
+                string jsonData = JsonConvert.SerializeObject(dataUsedForDelete);
+                _httpClient.DefaultRequestHeaders.Clear();
+                _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
+                HttpRequestMessage deleteRequest = new HttpRequestMessage
+                {
+                    Method = HttpMethod.Delete,
+                    RequestUri = new Uri(endpoint, UriKind.Relative),
+                    Content = new StringContent(jsonData, Encoding.UTF8, "application/json")
+                };
+                
+                HttpResponseMessage response = await _httpClient.SendAsync(deleteRequest);
+                return response.IsSuccessStatusCode;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"DeleteRequestWithBodyAsyncNoResponseBody: {ex.Message}", ex);
             }
         }
     }

@@ -3,7 +3,7 @@
     public static class Endpoints
     {
         /// <summary>
-        /// Defines the base URL utilized by the Plaud API for all HTTP requests.
+        /// Defines the base URL used by the Plaud API for all HTTP requests.
         /// Serves as the foundational address to which specific endpoint paths are appended,
         /// ensuring consistent communication with the API.
         /// Changes to this value generally occur only if the API's host or domain is updated.
@@ -25,7 +25,7 @@
 
         /// <summary>
         /// Represents the endpoint for generating shareable links to access specific files.
-        /// This allows users to obtain URLs that can be shared externally, providing
+        /// This allows users to get URLs that can be shared externally, providing
         /// controlled access to file resources through the Plaud API.
         /// </summary>
         /// <remarks>
@@ -84,7 +84,7 @@
 
         /// <summary>
         /// Represents the API endpoint path for retrieving authenticated user information.
-        /// This constant is utilized to request the details of the currently authenticated user
+        /// This constant is used to request the details of the currently authenticated user
         /// from the Plaud API. It provides access to user-specific data such as profile information
         /// and account settings.
         /// </summary>
@@ -96,5 +96,26 @@
         /// within the Plaud API framework.
         /// </summary>
         internal const string GetStatus = "/ai/status";
+
+        /// <summary>
+        /// Represents the endpoint for file operations within the Plaud API.
+        /// Facilitates actions such as retrieval, management, and handling of file-related metadata.
+        /// Used as the foundational route for API requests targeting file-specific resources.
+        /// </summary>
+        internal const string File = "/file/";
+
+        /// <summary>
+        /// Specifies the API endpoint used to restore files or recordings that were previously marked as trash.
+        /// This endpoint facilitates the untrashing functionality, allowing files to be returned to their original state
+        /// or location within the system.
+        /// </summary>
+        internal const string UnTrash = "/file/untrash/";
+
+        /// <summary>
+        /// Represents the API endpoint used for managing and retrieving files marked as trash.
+        /// This endpoint facilitates operations related to soft-deleted files, such as listing
+        /// or restoring them from the trash section within the system.
+        /// </summary>
+        internal const string Trash = "/file/trash/";
     }
 }

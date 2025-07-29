@@ -225,5 +225,38 @@ namespace API.Plaud.NET.Services
             }
             return await DownloadFile.DownloadFileAsBase64Async(responseExportFile.Data);
         }
+
+        /// <inheritdoc />
+        public async Task<bool> TrashRecordingsAsync(List<string> recordingIds)
+        {
+            if (recordingIds == null || recordingIds.Count == 0)
+            {
+                throw new Exception("Recording IDs cannot be empty.");
+            }
+
+            return await _plaudApi.PostDataAsyncNoResponseBody(Endpoints.Trash, recordingIds.ToArray(), AccessToken);
+        }
+
+        /// <inheritdoc />
+        public async Task<bool> UnTrashRecordingsAsync(List<string> recordingIds)
+        {
+            if (recordingIds == null || recordingIds.Count == 0)
+            {
+                throw new Exception("Recording IDs cannot be empty.");
+            }
+            
+            return await _plaudApi.PostDataAsyncNoResponseBody(Endpoints.UnTrash, recordingIds.ToArray(), AccessToken);
+        }
+
+        /// <inheritdoc />
+        public async Task<bool> PermanentlyDeleteRecordingsAsync(List<string> recordingIds)
+        {
+            if (recordingIds == null || recordingIds.Count == 0)
+            {
+                throw new Exception("Recording IDs cannot be empty.");
+            }
+            
+            return await _plaudApi.DeleteRequestWithBodyAsyncNoResponseBody(Endpoints.File, recordingIds.ToArray(), AccessToken);
+        }
     }
 }

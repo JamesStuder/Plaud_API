@@ -97,5 +97,26 @@ namespace API.Plaud.NET.Interfaces
         /// <param name="fileType">The type of the file to download, such as "pdf" or "txt".</param>
         /// <returns>A task representing the asynchronous operation, with a result containing the file path or file content as a string.</returns>
         Task<string> DownloadSummaryFileAsync(string recordingId, string fileType);
+
+        /// <summary>
+        /// Moves the specified recordings to the trash asynchronously.
+        /// </summary>
+        /// <param name="recordingIds">A list of recording IDs to be moved to the trash.</param>
+        /// <returns>A task representing the asynchronous operation. With a boolean representing if the process was successful or not.</returns>
+        Task<bool> TrashRecordingsAsync(List<string> recordingIds);
+
+        /// <summary>
+        /// Restores recordings from the trash asynchronously.
+        /// </summary>
+        /// <param name="recordingIds">A list of recording IDs to be restored from the trash.</param>
+        /// <returns>A task representing the asynchronous operation. With a boolean representing if the process was successful or not.</returns>
+        Task<bool> UnTrashRecordingsAsync(List<string> recordingIds);
+
+        /// <summary>
+        /// Permanently deletes the specified recordings from the trash asynchronously.
+        /// </summary>
+        /// <param name="recordingIds">A list of recording IDs to be permanently deleted.</param>
+        /// <returns>A task representing the asynchronous operation. With a boolean representing if the process was successful or not.</returns>
+        Task<bool> PermanentlyDeleteRecordingsAsync(List<string> recordingIds);
     }
 }

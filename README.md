@@ -37,6 +37,12 @@ This is an UNOFFICIAL .NET Standard 2.0 Library for the PLAUD API.  This is NOT 
   - Download the transcript file.  This will return the BASE64 string for you to convert.
 - **DownloadSummaryFileAsync**
   - Download the summary file.  This will return the BASE64 string for you to convert.
+- **TrashRecordingsAsync**
+  - Moves recordings(s) to the trash can.
+- **UnTrashRecordingsAsync**
+  - Moves the recording(s) out of the trash can.
+- **PermanentlyDeleteRecordingsAsync**
+  - Permanently deletes the recoding(s) from the trash can.
 
 # Notes:
 - Supported File Types:

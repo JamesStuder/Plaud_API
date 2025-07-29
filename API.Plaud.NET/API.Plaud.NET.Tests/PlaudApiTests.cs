@@ -97,6 +97,7 @@ namespace API.Plaud.NET.Tests
             Assert.That(specificRecording.DataFileList, Has.Count.EqualTo(1));
             Assert.That(specificRecording.DataFileList[0].Id, Is.EqualTo(recordings.DataFileList[0].Id));
         }
+        
         [Test]
         public void GetFileTagsTest()
         {
@@ -108,6 +109,7 @@ namespace API.Plaud.NET.Tests
             Assert.That(fileTags, Is.Not.Null);
             Assert.That(fileTags.DataFiletagList, Is.Not.Empty);
         }
+        
         [Test]
         public void CreateShareableLinkTest()
         {
@@ -130,6 +132,7 @@ namespace API.Plaud.NET.Tests
             Assert.That(shareableLink, Is.Not.Null);
             Assert.That(shareableLink.Url, Is.Not.Null);
         }
+        
         [Test]
         public void DownloadAudioFileTest()
         {
@@ -145,6 +148,7 @@ namespace API.Plaud.NET.Tests
             Assert.That(audioFile, Is.Not.Null);
             Assert.That(audioFile, Is.Not.Empty);
         }
+        
         [Test]
         public void DownloadTranscriptFileTest()
         {
@@ -159,6 +163,7 @@ namespace API.Plaud.NET.Tests
             Assert.That(transcriptFile, Is.Not.Null);
             Assert.That(transcriptFile, Is.Not.Empty);
         }
+        
         [Test]
         public void DownloadSummaryFileTest()
         {            
@@ -173,6 +178,57 @@ namespace API.Plaud.NET.Tests
             string summaryFile = _plaudApiService.DownloadSummaryFileAsync(recordings.DataFileList[0].Id, FileTypes.TXT).Result;
             Assert.That(summaryFile, Is.Not.Null);
             Assert.That(summaryFile, Is.Not.Empty);
+        }
+        
+        [Test]
+        public void TrashFileTest()
+        { 
+            //Insert the id of a recording
+            const string recordIdToTrash = "";
+            List<string>recordIds = new List<string>
+            {
+                recordIdToTrash
+            };
+            Assert.That(_AuthResponse, Is.Not.Null);
+            Assert.That(_AuthResponse.AccessToken, Is.Not.Null);
+            Assert.That(_plaudApiService.AccessToken, Is.Not.Null);
+            
+            bool isSuccessful = _plaudApiService.TrashRecordingsAsync(recordIds).Result;
+            Assert.That(isSuccessful, Is.True);
+        }
+        
+        [Test]
+        public void UnTrashFileTest()
+        {            
+            //Insert the id of a recording
+            const string recordIdToUnTrash = "";
+            List<string>recordIds = new List<string>
+            {
+                recordIdToUnTrash
+            };
+            Assert.That(_AuthResponse, Is.Not.Null);
+            Assert.That(_AuthResponse.AccessToken, Is.Not.Null);
+            Assert.That(_plaudApiService.AccessToken, Is.Not.Null);
+            
+            bool isSuccessful = _plaudApiService.UnTrashRecordingsAsync(recordIds).Result;
+            Assert.That(isSuccessful, Is.True);
+        }
+        
+        [Test]
+        public void PermanentlyDeleteFileTest()
+        {            
+            //Insert the id of a recording
+            const string recordIdToDelete = "";
+            List<string>recordIds = new List<string>
+            {
+                recordIdToDelete
+            };
+            Assert.That(_AuthResponse, Is.Not.Null);
+            Assert.That(_AuthResponse.AccessToken, Is.Not.Null);
+            Assert.That(_plaudApiService.AccessToken, Is.Not.Null);
+            
+            bool isSuccessful = _plaudApiService.PermanentlyDeleteRecordingsAsync(recordIds).Result;
+            Assert.That(isSuccessful, Is.True);
         }
     }
 }
