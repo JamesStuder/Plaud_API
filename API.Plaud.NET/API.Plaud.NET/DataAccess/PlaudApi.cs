@@ -16,6 +16,9 @@ namespace API.Plaud.NET.DataAccess
     /// </summary>
     internal class PlaudApi
     {
+        // Pseudo device id to mimic headers observed from the web client
+        private readonly string _deviceId = Guid.NewGuid().ToString("N").Substring(0, 16);
+
         /// <summary>
         /// Represents an instance of <see cref="HttpClient"/> used for handling HTTP requests
         /// and communication with the Plaud API, including setting the base address
@@ -85,8 +88,27 @@ namespace API.Plaud.NET.DataAccess
             {
                 _httpClient.DefaultRequestHeaders.Clear();
                 _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
+                // Align headers with the working browser/Postman call to avoid 5xx from gateway
+                _httpClient.DefaultRequestHeaders.TryAddWithoutValidation("Accept", "application/json, text/plain, */*");
+                _httpClient.DefaultRequestHeaders.TryAddWithoutValidation("Accept-Language", "en-US,en;q=0.7");
+                _httpClient.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36");
+                _httpClient.DefaultRequestHeaders.TryAddWithoutValidation("app-language", "en");
+                _httpClient.DefaultRequestHeaders.TryAddWithoutValidation("app-platform", "web");
+                _httpClient.DefaultRequestHeaders.TryAddWithoutValidation("edit-from", "web");
+                _httpClient.DefaultRequestHeaders.TryAddWithoutValidation("origin", "https://app.plaud.ai");
+                _httpClient.DefaultRequestHeaders.TryAddWithoutValidation("referer", "https://app.plaud.ai/");
+                _httpClient.DefaultRequestHeaders.Remove("x-request-id");
+                _httpClient.DefaultRequestHeaders.TryAddWithoutValidation("x-request-id", Guid.NewGuid().ToString("N").Substring(0, 10));
+                _httpClient.DefaultRequestHeaders.TryAddWithoutValidation("x-device-id", _deviceId);
+                _httpClient.DefaultRequestHeaders.TryAddWithoutValidation("x-pld-tag", _deviceId);
+
                 HttpResponseMessage response = await _httpClient.GetAsync(endpoint);
                 string content = await response.Content.ReadAsStringAsync();
+                if (!response.IsSuccessStatusCode)
+                {
+                    string snippet = string.IsNullOrEmpty(content) ? "<empty>" : (content.Length > 512 ? content.Substring(0, 512) + "..." : content);
+                    throw new Exception($"HTTP {(int)response.StatusCode} {response.StatusCode}: {snippet}");
+                }
                 return JsonConvert.DeserializeObject<T>(content);
             }
             catch (Exception ex)
@@ -110,10 +132,27 @@ namespace API.Plaud.NET.DataAccess
             {
                 _httpClient.DefaultRequestHeaders.Clear();
                 _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
+                _httpClient.DefaultRequestHeaders.TryAddWithoutValidation("Accept", "application/json, text/plain, */*");
+                _httpClient.DefaultRequestHeaders.TryAddWithoutValidation("Accept-Language", "en-US,en;q=0.7");
+                _httpClient.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36");
+                _httpClient.DefaultRequestHeaders.TryAddWithoutValidation("app-language", "en");
+                _httpClient.DefaultRequestHeaders.TryAddWithoutValidation("app-platform", "web");
+                _httpClient.DefaultRequestHeaders.TryAddWithoutValidation("edit-from", "web");
+                _httpClient.DefaultRequestHeaders.TryAddWithoutValidation("origin", "https://app.plaud.ai");
+                _httpClient.DefaultRequestHeaders.TryAddWithoutValidation("referer", "https://app.plaud.ai/");
+                _httpClient.DefaultRequestHeaders.Remove("x-request-id");
+                _httpClient.DefaultRequestHeaders.TryAddWithoutValidation("x-request-id", Guid.NewGuid().ToString("N").Substring(0, 10));
+                _httpClient.DefaultRequestHeaders.TryAddWithoutValidation("x-device-id", _deviceId);
+                _httpClient.DefaultRequestHeaders.TryAddWithoutValidation("x-pld-tag", _deviceId);
                 string jsonData = JsonConvert.SerializeObject(dataToPost);
                 StringContent content = new StringContent(jsonData, Encoding.UTF8, "application/json");
                 HttpResponseMessage response = await _httpClient.PostAsync(endpoint, content);
                 string responseContent = await response.Content.ReadAsStringAsync();
+                if (!response.IsSuccessStatusCode)
+                {
+                    string snippet = string.IsNullOrEmpty(responseContent) ? "<empty>" : (responseContent.Length > 512 ? responseContent.Substring(0, 512) + "..." : responseContent);
+                    throw new Exception($"HTTP {(int)response.StatusCode} {response.StatusCode}: {snippet}");
+                }
                 return JsonConvert.DeserializeObject<T>(responseContent);
             }
             catch (Exception ex)
@@ -137,6 +176,14 @@ namespace API.Plaud.NET.DataAccess
             {
                 _httpClient.DefaultRequestHeaders.Clear();
                 _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
+                _httpClient.DefaultRequestHeaders.TryAddWithoutValidation("Accept", "application/json, text/plain, */*");
+                _httpClient.DefaultRequestHeaders.TryAddWithoutValidation("Accept-Language", "en-US,en;q=0.7");
+                _httpClient.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36");
+                _httpClient.DefaultRequestHeaders.TryAddWithoutValidation("app-language", "en");
+                _httpClient.DefaultRequestHeaders.TryAddWithoutValidation("app-platform", "web");
+                _httpClient.DefaultRequestHeaders.TryAddWithoutValidation("edit-from", "web");
+                _httpClient.DefaultRequestHeaders.TryAddWithoutValidation("origin", "https://app.plaud.ai");
+                _httpClient.DefaultRequestHeaders.TryAddWithoutValidation("referer", "https://app.plaud.ai/");
                 string jsonData = JsonConvert.SerializeObject(dataToPost);
                 StringContent content = new StringContent(jsonData, Encoding.UTF8, "application/json");
                 HttpResponseMessage response = await _httpClient.PostAsync(endpoint, content);

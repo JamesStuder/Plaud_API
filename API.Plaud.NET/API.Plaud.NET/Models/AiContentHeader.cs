@@ -11,6 +11,14 @@ namespace API.Plaud.NET.Models
         [JsonProperty("keywords")]
         public List<string> Keywords { get; set; }
 
+        // Optional in newer API responses
+        [JsonProperty("summary_id")]
+        public string SummaryId { get; set; }
+
+        // Optional: language code may appear in newer responses
+        [JsonProperty("language_code")]
+        public string LanguageCode { get; set; }
+
         [JsonProperty("industry_category")]
         public string IndustryCategory { get; set; }
 

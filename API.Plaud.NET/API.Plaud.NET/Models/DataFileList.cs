@@ -92,6 +92,10 @@ namespace API.Plaud.NET.Models
         [JsonProperty("ai_content")]
         public string AiContent { get; set; }
 
+        // Newer API responses may include outline topics with time ranges
+        [JsonProperty("outline_result")]
+        public List<OutlineResult> OutlineResult { get; set; }
+
         [JsonProperty("extra_data")]
         public ExtraData ExtraData { get; set; }
     }

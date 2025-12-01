@@ -112,7 +112,14 @@ namespace API.Plaud.NET.Services
             {
                 throw new Exception("Recording ID cannot be empty.");
             }
-            
+ 
+            string summaryId = null;
+            ResponseListRecordings rec = await _plaudApi.PostDataAsync<ResponseListRecordings>(Endpoints.GetRecordingsById, new List<string> { recordingId }, AccessToken);
+            if (rec?.DataFileList != null && rec.DataFileList.Count > 0)
+            {
+                summaryId = rec.DataFileList[0]?.ExtraData?.TaskIdInfo?.SummaryId ?? rec.DataFileList[0]?.ExtraData?.AiContentHeader?.SummaryId;
+            }
+
             RequestUploadInfo uploadInfo = new RequestUploadInfo
             {
                 Info = new Info
@@ -123,6 +130,7 @@ namespace API.Plaud.NET.Services
                         Action = "export_audio",
                         FileKey = recordingId,
                         FileID = recordingId,
+                        SummaryId = summaryId,
                         From = "web"
                     }
                 }
@@ -147,7 +155,14 @@ namespace API.Plaud.NET.Services
             {
                 throw new Exception("Recording ID and File Type cannot be empty.");
             }
-            
+      
+            ResponseListRecordings recording = await _plaudApi.PostDataAsync<ResponseListRecordings>(Endpoints.GetRecordingsById, new List<string> { recordingId }, AccessToken);
+            if (recording.DataFileTotal != 1)
+            {
+                throw new Exception($"Unable to locate recording with provided ID {recordingId}.");
+            }
+            string summaryId = recording.DataFileList[0]?.ExtraData?.TaskIdInfo?.SummaryId ?? recording.DataFileList[0]?.ExtraData?.AiContentHeader?.SummaryId;
+
             RequestUploadInfo uploadInfo = new RequestUploadInfo
             {
                 Info = new Info
@@ -158,6 +173,7 @@ namespace API.Plaud.NET.Services
                         Action = "export_transcription",
                         FileKey = recordingId,
                         FileID = recordingId,
+                        SummaryId = summaryId,
                         From = "web"
                     }
                 }
@@ -167,13 +183,9 @@ namespace API.Plaud.NET.Services
             {
                 throw new Exception("Upload Info failed.");
             }
-            ResponseListRecordings recording = await _plaudApi.PostDataAsync<ResponseListRecordings>(Endpoints.GetRecordingsById, new List<string> { recordingId }, AccessToken);
-            if (recording.DataFileTotal != 1)
-            {
-                throw new Exception($"Unable to locate recording with provided ID {recordingId}.");
-            }
-            bool hasSpeaker = recording.DataFileList[0].TransResult.Any(s => string.IsNullOrEmpty(s.Speaker));
-            bool hasTimestamp = recording.DataFileList[0].TransResult.Any(s => s.StartTime >= 0);
+            var transSegments = recording.DataFileList[0].TransResult ?? new List<TransContent>();
+            bool hasSpeaker = transSegments.Any(s => string.IsNullOrEmpty(s.Speaker) == false);
+            bool hasTimestamp = transSegments.Any(s => s.StartTime >= 0);
             RequestExportFile exportFile = new RequestExportFile
             {
                 FileId = recordingId,
@@ -183,8 +195,10 @@ namespace API.Plaud.NET.Services
                 CreateTime = DateService.ConvertTimeStampToFormattedDateTime(recording.DataFileList[0].StartTime),
                 WithSpeaker = hasSpeaker ? 1 : 0,
                 WithTimestamp = hasTimestamp ? 1 : 0,
-                TransContent = recording.DataFileList[0].TransResult
+                TransContent = transSegments
             };
+            // Include summary id if available (required by newer API versions)
+            exportFile.SummaryId = summaryId;
             ResponseExportFile responseExportFile = await _plaudApi.PostDataAsync<ResponseExportFile>(Endpoints.ExportDocument, exportFile, AccessToken);
             if (string.IsNullOrEmpty(responseExportFile.Data))
             {
@@ -205,8 +219,9 @@ namespace API.Plaud.NET.Services
             {
                 throw new Exception($"Unable to locate recording with provided ID {recordingId}.");
             }
-            bool hasSpeaker = recording.DataFileList[0].TransResult.Any(s => string.IsNullOrEmpty(s.Speaker));
-            bool hasTimestamp = recording.DataFileList[0].TransResult.Any(s => s.StartTime >= 0);
+            var transSegments = recording.DataFileList[0].TransResult ?? new List<TransContent>();
+            bool hasSpeaker = transSegments.Any(s => string.IsNullOrEmpty(s.Speaker) == false);
+            bool hasTimestamp = transSegments.Any(s => s.StartTime >= 0);
             RequestExportSummary exportFile = new RequestExportSummary
             {
                 FileId = recordingId,
@@ -218,6 +233,9 @@ namespace API.Plaud.NET.Services
                 WithTimestamp = hasTimestamp ? 1 : 0,
                 SummaryContent = recording.DataFileList[0].AiContent
             };
+            // Include summary id if available (required by newer API versions)
+            exportFile.SummaryId = recording.DataFileList[0]?.ExtraData?.TaskIdInfo?.SummaryId
+                                   ?? recording.DataFileList[0]?.ExtraData?.AiContentHeader?.SummaryId;
             ResponseExportFile responseExportFile = await _plaudApi.PostDataAsync<ResponseExportFile>(Endpoints.ExportDocument, exportFile, AccessToken);
             if (string.IsNullOrEmpty(responseExportFile.Data))
             {

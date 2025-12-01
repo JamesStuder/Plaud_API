@@ -26,6 +26,10 @@ namespace API.Plaud.NET.Models.Requests
         [JsonProperty("with_timestamp")]
         public int? WithTimestamp { get; set; }
 
+        // Newer API requires summary id for some export operations
+        [JsonProperty("summaryid")]
+        public string SummaryId { get; set; }
+
         [JsonProperty("trans_content")]
         public List<TransContent> TransContent { get; set; }
     }

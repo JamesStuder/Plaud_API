@@ -18,5 +18,9 @@ namespace API.Plaud.NET.Models
 
         [JsonProperty("diarization")]
         public int Diarization { get; set; }
+
+        // Newer responses may include created_at timestamp
+        [JsonProperty("created_at")]
+        public string CreatedAt { get; set; }
     }
 }

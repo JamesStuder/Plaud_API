@@ -11,7 +11,9 @@
         internal const string BaseUrl = "https://api.plaud.ai";
 
         /// <summary>
-        /// 
+        /// Represents the API endpoint for obtaining an access token required for authentication.
+        /// This endpoint is utilized by the client to send authentication requests and retrieve
+        /// a token used for accessing secured resources within the API.
         /// </summary>
         internal const string Authentication = "/auth/access-token";
 
