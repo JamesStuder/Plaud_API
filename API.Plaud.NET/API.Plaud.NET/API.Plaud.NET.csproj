@@ -3,7 +3,7 @@
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <Version>2025.07.29.01</Version>
+        <Version>2025.12.01.01</Version>
         <Title>Plaud API .NET Standard 2.0 Library</Title>
         <Authors>James Studer</Authors>
         <Description>This is an UNOFFICIAL .NET Standard 2.0 Library for the PLAUD API. This is NOT supported by the PLAUD team and was created by me to use in other projects I have to fill gaps that the platform doesn't support yet.</Description>
@@ -11,12 +11,12 @@
         <RepositoryUrl>https://github.com/JamesStuder/Plaud_API</RepositoryUrl>
         <RepositoryType>Github</RepositoryType>
         <PackageTags>Plaud</PackageTags>
-        <AssemblyVersion>2025.07.29.01</AssemblyVersion>
-        <FileVersion>2025.07.29.01</FileVersion>
+        <AssemblyVersion>2025.12.01.01</AssemblyVersion>
+        <FileVersion>2025.12.01.01</FileVersion>
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
     </ItemGroup>
 
     <ItemGroup>
